@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="tg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Exam Helper</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    background:linear-gradient(135deg,#030712,#071a32,#001d3d);
+    color:white;
+    min-height:100vh;
+}
+
+header{
+    padding:25px 8%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border-bottom:1px solid #1d4ed8;
+    background:rgba(0,0,0,.35);
+    position:sticky;
+    top:0;
+    z-index:10;
+    backdrop-filter:blur(12px);
+}
+
+.logo{
+    font-size:25px;
+    font-weight:bold;
+    color:#38bdf8;
+}
+
+.logo span{
+    color:white;
+}
+
+nav button{
+    background:none;
+    border:1px solid #2563eb;
+    color:white;
+    padding:10px 16px;
+    border-radius:10px;
+    margin-left:7px;
+    cursor:pointer;
+    transition:.3s;
+}
+
+nav button:hover{
+    background:#2563eb;
+    transform:translateY(-2px);
+}
+
+.hero{
+    text-align:center;
+    padding:65px 20px 40px;
+}
+
+.hero h1{
+    font-size:50px;
+    margin-bottom:15px;
+    background:linear-gradient(90deg,#38bdf8,#60a5fa,#a78bfa);
+    -webkit-background-clip:text;
+    color:transparent;
+}
+
+.hero p{
+    color:#cbd5e1;
+    font-size:18px;
+    max-width:700px;
+    margin:auto;
+}
+
+.container{
+    width:90%;
+    max-width:1200px;
+    margin:auto;
+}
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+    gap:20px;
+    margin:35px 0;
+}
+
+.card{
+    background:rgba(15,23,42,.8);
+    border:1px solid #1e40af;
+    border-radius:18px;
+    padding:25px;
+    transition:.3s;
+    cursor:pointer;
+}
+
+.card:hover{
+    transform:translateY(-7px);
+    box-shadow:0 15px 40px rgba(37,99,235,.25);
+    border-color:#38bdf8;
+}
+
+.card .num{
+    color:#38bdf8;
+    font-size:30px;
+    font-weight:bold;
+}
+
+.card h3{
+    margin:12px 0;
+}
+
+.card p{
+    color:#94a3b8;
+    line-height:1.6;
+}
+
+.section{
+    display:none;
+    padding:30px 0 80px;
+}
+
+.section.active{
+    display:block;
+}
+
+.title{
+    font-size:32px;
+    margin-bottom:25px;
+    color:#38bdf8;
+}
+
+.search{
+    width:100%;
+    padding:15px;
+    border-radius:12px;
+    border:1px solid #2563eb;
+    background:#07111f;
+    color:white;
+    outline:none;
+    margin-bottom:25px;
+}
+
+.lesson-box{
+    background:rgba(15,23,42,.9);
+    padding:30px;
+    border-radius:18px;
+    border:1px solid #1e40af;
+    margin-bottom:20px;
+}
+
+.lesson-box h2{
+    color:#60a5fa;
+    margin-bottom:15px;
+}
+
+.lesson-box p,
+.lesson-box li{
+    color:#cbd5e1;
+    line-height:1.8;
+}
+
+.lesson-box ul{
+    padding-left:25px;
+}
+
+.quiz{
+    background:rgba(15,23,42,.95);
+    border:1px solid #2563eb;
+    border-radius:20px;
+    padding:30px;
+    max-width:850px;
+    margin:auto;
+}
+
+.question{
+    font-size:23px;
+    margin-bottom:25px;
+}
+
+.answer{
+    width:100%;
+    padding:15px;
+    margin:8px 0;
+    background:#0f1f36;
+    color:white;
+    border:1px solid #334155;
+    border-radius:12px;
+    cursor:pointer;
+    text-align:left;
+    font-size:16px;
+    transition:.2s;
+}
+
+.answer:hover{
+    background:#1e3a8a;
+    border-color:#38bdf8;
+}
+
+.correct{
+    background:#065f46 !important;
+    border-color:#10b981 !important;
+}
+
+.wrong{
+    background:#7f1d1d !important;
+    border-color:#ef4444 !important;
+}
+
+.next{
+    margin-top:20px;
+    padding:14px 25px;
+    background:#2563eb;
+    border:0;
+    border-radius:12px;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+}
+
+.next:hover{
+    background:#1d4ed8;
+}
+
+.score{
+    text-align:center;
+    font-size:28px;
+    margin-bottom:20px;
+    color:#38bdf8;
+}
+
+.progress{
+    height:10px;
+    background:#1e293b;
+    border-radius:10px;
+    overflow:hidden;
+    margin-bottom:25px;
+}
+
+.progress-bar{
+    height:100%;
+    background:linear-gradient(90deg,#2563eb,#38bdf8);
+    width:0%;
+    transition:.4s;
+}
+
+footer{
+    text-align:center;
+    padding:30px;
+    color:#64748b;
+    border-top:1px solid #1e293b;
+}
+
+@media(max-width:600px){
+    .hero h1{
+        font-size:36px;
+    }
+
+    header{
+        flex-direction:column;
+        gap:15px;
+    }
+
+    nav button{
+        padding:8px 10px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">AI <span>EXAM HELPER</span> 🤖</div>
+
+    <nav>
+        <button onclick="showSection('home')">🏠 Асосӣ</button>
+        <button onclick="showSection('lessons')">📚 Дарсҳо</button>
+        <button onclick="showSection('quiz')">🧠 Тест</button>
+    </nav>
+</header>
+
+
+<!-- HOME -->
+
+<section id="home" class="section active">
+
+<div class="hero">
+    <h1>AI EXAM HELPER</h1>
+
+    <p>
+        Омодагӣ ба имтиҳони
+        <b>AI Developer</b><br>
+        Фундаментҳои рақамӣ ва AI
+    </p>
+</div>
+
+<div class="container">
+
+<div class="cards">
+
+<div class="card" onclick="showSection('lessons')">
+    <div class="num">01</div>
+    <h3>📚 Дарсҳои 1–12</h3>
+    <p>Мавзӯъҳои асосиро аз назар гузарон.</p>
+</div>
+
+<div class="card" onclick="showSection('quiz')">
+    <div class="num">02</div>
+    <h3>🧠 Тест</h3>
+    <p>Ба саволҳо ҷавоб деҳ ва хол гир.</p>
+</div>
+
+<div class="card">
+    <div class="num">03</div>
+    <h3>⚡ Такрори зуд</h3>
+    <p>Пеш аз имтиҳон маълумоти асосиро такрор кун.</p>
+</div>
+
+<div class="card">
+    <div class="num">04</div>
+    <h3>🏆 Натиҷа</h3>
+    <p>Бин, ки чанд фоиз ҷавобҳоят дурустанд.</p>
+</div>
+
+</div>
+
+<div class="lesson-box">
+<h2>🎯 Маслиҳат барои имтиҳон</h2>
+
+<p>
+Аввал дарсҳоро хон, баъд тестро якчанд маротиба супор.
+Агар ҷавобро надонӣ, ҷавоби дуруст баъд аз интихоб нишон дода мешавад.
+</p>
+
+<br>
+
+<p>
+<b>Нақша:</b> Дарс → Такрор → Тест → Натиҷа 🏆
+</p>
+</div>
+
+</div>
+</section>
+
+
+<!-- LESSONS -->
+
+<section id="lessons" class="section">
+
+<div class="container">
+
+<h1 class="title">📚 Дарсҳои 1–12</h1>
+
+<input
+class="search"
+id="search"
+placeholder="🔎 Дарсро ҷустуҷӯ кун..."
+onkeyup="searchLessons()"
+>
+
+<div id="lessonList">
+
+<div class="lesson-box">
+<h2>01 — Фундаментҳои рақамӣ ва AI</h2>
+<p>
+AI (Artificial Intelligence) — зеҳни сунъӣ мебошад.
+Он технологияест, ки ба компютерҳо имконият медиҳад
+баъзе вазифаҳоро иҷро кунанд, ки одатан ба зеҳни инсон вобастаанд.
+</p>
+<ul>
+<li>AI чист?</li>
+<li>Маълумот (Data)</li>
+<li>Алгоритм</li>
+<li>Компютер ва технологияҳои рақамӣ</li>
+</ul>
+</div>
+
+<div class="lesson-box">
+<h2>02 — Компютер ва системаҳо</h2>
+<p>
+Компютер маълумотро қабул мекунад, коркард мекунад
+ва натиҷа медиҳад.
+</p>
+<ul>
+<li>Hardware</li>
+<li>Software</li>
+<li>CPU</li>
+<li>RAM</li>
+<li>Storage</li>
+</ul>
+</div>
+
+<div class="lesson-box">
+<h2>03 — Алгоритмҳо</h2>
+<p>
+Алгоритм маҷмӯи қадамҳои муайян мебошад,
+ки барои ҳалли масъала истифода мешавад.
+</p>
+<ul>
+<li>Қадамҳои алгоритм</li>
+<li>Input</li>
+<li>Process</li>
+<li>Output</li>
+</ul>
+</div>
+
+<div class="lesson-box">
+<h2>04 — Барномасозӣ</h2>
+<p>
+Барномасозӣ ин навиштани дастурҳо барои компютер мебошад.
+</p>
+<ul>
+<li>Code</li>
+<li>Variable</li>
+<li>Function</li>
+<li>Condition</li>
+</ul>
+</div>
+
+<div class="lesson-box">
+<h2>05 — Data</h2>
+<p>
+Data ё маълумот яке аз асосҳои муҳимтарини системаҳои AI мебошад.
+AI барои омӯзиш ва таҳлил аз маълумот истифода мебарад.
+</p>
+<ul>
+<li>Маълумоти сохторӣ</li>
+<li>Маълумоти ғайрисохторӣ</li>
+<li>Ҷамъоварии маълумот</li>
+</ul>
+</div>
+
+<div class="lesson-box">
+<h2>06 — Machine Learning</h2>
+<p>
+Machine Learning ё омӯзиши мошинӣ як қисми AI мебошад.
+Система аз маълумот намунаҳоро меомӯзад.
+</p>
+<ul>
+<li>Training</li>
+<li>Model</li>
+<li>Prediction</li>
+</ul>
+</div>
+
+<div class="lesson-box">
+<h2>07 — Neural Networks</h2>
+<p>
+Neural Network моделест, ки аз идеяи кори нейронҳои майна илҳом гирифта шудааст.
+</p>
+<ul>
+<li>Neuron</li>
+<li>Layer</li>
+<li>Input</li>
+<li>Output</li>
+</ul>
+</div>
+
+<div class="lesson-box">
+<h2>08 — Deep Learning</h2>
+<p>
+Deep Learning шакли пешрафтаи Machine Learning мебошад,
+ки аз neural network-ҳои бисёрқабата истифода мебарад.
+</p>
+</div>
+
+<div class="lesson-box">
+<h2>09 — Computer Vision</h2>
+<p>
+Computer Vision ба компютер имконият медиҳад,
+ки тасвирҳо ва видеоҳоеро таҳлил кунад.
+</p>
+<ul>
+<li>Image Recognition</li>
+<li>Object Detection</li>
+<li>Image Classification</li>
+</ul>
+</div>
+
+<div class="lesson-box">
+<h2>10 — Natural Language Processing</h2>
+<p>
+NLP технологияест барои кор бо забони инсон.
+Масалан, chatbot ва тарҷумонҳо.
+</p>
+</div>
+
+<div class="lesson-box">
+<h2>11 — Generative AI</h2>
+<p>
+Generative AI метавонад матн, тасвир, код ва дигар намудҳои
+контентро эҷод кунад.
+</p>
+</div>
+
+<div class="lesson-box">
+<h2>12 — AI ва оянда</h2>
+<p>
+AI дар соҳаҳои гуногун истифода мешавад:
+маориф, тиб, бизнес, барномасозӣ, саноат ва ғайра.
+</p>
+</div>
+
+</div>
+
+</div>
+</section>
+
+
+<!-- QUIZ -->
+
+<section id="quiz" class="section">
+
+<div class="container">
+
+<h1 class="title">🧠 Имтиҳони AI</h1>
+
+<div class="quiz">
+
+<div class="score">
+Хол: <span id="score">0</span>
+</div>
+
+<div class="progress">
+<div class="progress-bar" id="progress"></div>
+</div>
+
+<div id="quizContent"></div>
+
+</div>
+
+</div>
+</section>
+
+
+<footer>
+AI Exam Helper • Омодагӣ ба AI Developer 🤖
+</footer>
+
+
+<script>
+
+function showSection(id){
+
+document.querySelectorAll(".section").forEach(section=>{
+    section.classList.remove("active");
+});
+
+document.getElementById(id).classList.add("active");
+
+window.scrollTo({
+    top:0,
+    behavior:"smooth"
+});
+
+if(id==="quiz"){
+    loadQuestion();
+}
+
+}
+
+
+// SEARCH
+
+function searchLessons(){
+
+let value=document.getElementById("search").value.toLowerCase();
+
+let boxes=document.querySelectorAll("#lessonList .lesson-box");
+
+boxes.forEach(box=>{
+
+if(box.innerText.toLowerCase().includes(value)){
+    box.style.display="block";
+}else{
+    box.style.display="none";
+}
+
+});
+
+}
+
+
+// QUIZ
+
+const questions=[
+
+{
+q:"AI чӣ маъно дорад?",
+answers:[
+"Artificial Intelligence",
+"Automatic Internet",
+"Advanced Information",
+"Artificial Internet"
+],
+correct:0
+},
+
+{
+q:"AI барои чӣ истифода мешавад?",
+answers:[
+"Танҳо барои бозӣ",
+"Барои иҷрои вазифаҳои интеллектуалӣ",
+"Танҳо барои чоп",
+"Танҳо барои мусиқӣ"
+],
+correct:1
+},
+
+{
+q:"Algorithm чист?",
+answers:[
+"Компютер",
+"Маҷмӯи қадамҳо барои ҳалли масъала",
+"Монитор",
+"Файл"
+],
+correct:1
+},
+
+{
+q:"Data чӣ маъно дорад?",
+answers:[
+"Маълумот",
+"Принтер",
+"Клавиатура",
+"Барнома"
+],
+correct:0
+},
+
+{
+q:"Machine Learning чист?",
+answers:[
+"Навъи монитор",
+"Омӯзиши мошинӣ",
+"Системаи оператсионӣ",
+"Клавиатура"
+],
+correct:1
+},
+
+{
+q:"CPU барои чӣ истифода мешавад?",
+answers:[
+"Коркарди дастурҳо",
+"Танҳо нигоҳдории файл",
+"Чоп кардани ҳуҷҷат",
+"Пайваст кардани интернет"
+],
+correct:0
+},
+
+{
+q:"RAM чист?",
+answers:[
+"Хотираи фаврӣ",
+"Принтер",
+"Процессор",
+"Камера"
+],
+correct:0
+},
+
+{
+q:"Neural Network аз чӣ илҳом гирифта шудааст?",
+answers:[
+"Мошин",
+"Майнаи инсон",
+"Телефон",
+"Интернет"
+],
+correct:1
+},
+
+{
+q:"Computer Vision бо чӣ кор мекунад?",
+answers:[
+"Танҳо садо",
+"Тасвир ва видео",
+"Танҳо клавиатура",
+"Танҳо файлҳои Word"
+],
+correct:1
+},
+
+{
+q:"NLP барои чӣ истифода мешавад?",
+answers:[
+"Кор бо забони инсон",
+"Сохтани CPU",
+"Захира кардани RAM",
+"Чоп кардани акс"
+],
+correct:0
+},
+
+{
+q:"Generative AI чӣ кор карда метавонад?",
+answers:[
+"Танҳо компютерро хомӯш кунад",
+"Контент эҷод кунад",
+"Танҳо интернетро фаъол кунад",
+"Танҳо файлро нест кунад"
+],
+correct:1
+},
+
+{
+q:"Deep Learning ба кадом соҳа тааллуқ дорад?",
+answers:[
+"Machine Learning",
+"Printer",
+"Hardware",
+"Keyboard"
+],
+correct:0
+},
+
+{
+q:"Software чист?",
+answers:[
+"Қисми барномавии система",
+"Қисми мизи корӣ",
+"Монитор",
+"Клавиатура"
+],
+correct:0
+},
+
+{
+q:"Input чист?",
+answers:[
+"Маълумоти воридшаванда",
+"Натиҷаи охирин",
+"Принтер",
+"Садо"
+],
+correct:0
+},
+
+{
+q:"Output чист?",
+answers:[
+"Маълумоти баромадӣ",
+"CPU",
+"RAM",
+"Mouse"
+],
+correct:0
+},
+
+{
+q:"Chatbot бештар бо кадом технология алоқаманд аст?",
+answers:[
+"NLP",
+"RAM",
+"CPU",
+"Printer"
+],
+correct:0
+},
+
+{
+q:"Model дар Machine Learning чист?",
+answers:[
+"Модели омӯзонидашуда барои иҷрои вазифа",
+"Монитор",
+"Клавиатура",
+"Сими интернет"
+],
+correct:0
+},
+
+{
+q:"Training дар AI чӣ маъно дорад?",
+answers:[
+"Омӯзонидани модел",
+"Хомӯш кардани компютер",
+"Чоп кардани файл",
+"Нест кардани маълумот"
+],
+correct:0
+},
+
+{
+q:"AI метавонад дар кадом соҳа истифода шавад?",
+answers:[
+"Тиб",
+"Маориф",
+"Бизнес",
+"Ҳамаи ҷавобҳо"
+],
+correct:3
+},
+
+{
+q:"Кадомаш яке аз намудҳои AI мебошад?",
+answers:[
+"Generative AI",
+"Wood AI",
+"Paper AI",
+"Table AI"
+],
+correct:0
+}
+
+];
+
+let current=0;
+let points=0;
+let answered=false;
+
+function loadQuestion(){
+
+if(current>=questions.length){
+
+document.getElementById("quizContent").innerHTML=`
+
+<div style="text-align:center">
+
+<h2 style="font-size:35px;color:#38bdf8">
+🏆 Тест ба охир расид!
+</h2>
+
+<br>
+
+<p style="font-size:22px">
+Натиҷаи ту:
+</p>
+
+<br>
+
+<p style="font-size:45px;color:#60a5fa">
+${points} / ${questions.length}
+</p>
+
+<br>
+
+<p>
+${Math.round(points/questions.length*100)}% ҷавобҳо дуруст
+</p>
+
+<br>
+
+<button class="next" onclick="restartQuiz()">
+🔄 Аз нав оғоз кардан
+</button>
+
+</div>
+
+`;
+
+return;
+
+}
+
+answered=false;
+
+let q=questions[current];
+
+let html=`
+
+<div class="question">
+${current+1}. ${q.q}
+</div>
+
+`;
+
+q.answers.forEach((answer,index)=>{
+
+html+=`
+
+<button
+class="answer"
+onclick="checkAnswer(${index},this)"
+>
+${String.fromCharCode(65+index)}. ${answer}
+</button>
+
+`;
+
+});
+
+html+=`
+
+<button
+class="next"
+id="nextBtn"
+onclick="nextQuestion()"
+style="display:none"
+>
+Саволи нав ➜
+</button>
+
+`;
+
+document.getElementById("quizContent").innerHTML=html;
+
+document.getElementById("progress").style.width=
+((current)/questions.length*100)+"%";
+
+}
+
+
+function checkAnswer(index,button){
+
+if(answered)return;
+
+answered=true;
+
+let q=questions[current];
+
+let buttons=document.querySelectorAll(".answer");
+
+if(index===q.correct){
+
+button.classList.add("correct");
+points++;
+
+}else{
+
+button.classList.add("wrong");
+buttons[q.correct].classList.add("correct");
+
+}
+
+document.getElementById("score").innerText=points;
+
+document.getElementById("nextBtn").style.display="inline-block";
+
+}
+
+
+function nextQuestion(){
+
+current++;
+loadQuestion();
+
+}
+
+
+function restartQuiz(){
+
+current=0;
+points=0;
+
+document.getElementById("score").innerText=0;
+
+loadQuestion();
+
+}
+
+</script>
+
+</body>
+</html>
